@@ -13,77 +13,158 @@
 body {
   margin:0;
   font-family:'Quicksand',sans-serif;
-  background:#f4f6f2;
   color:#4f6f52;
+  transition: background 0.8s ease;
 }
 
-.container{
-  max-width:900px;
-  margin:auto;
-  padding:20px;
+/* seasonal backgrounds */
+.scene-april { background:linear-gradient(#e6edf5,#f4f7fb); }
+.scene-may { background:linear-gradient(#eef6ec,#f7fbf6); }
+.scene-june { background:linear-gradient(#fff6e5,#fffaf2); }
+.scene-july { background:linear-gradient(#ffecec,#fff5f5); }
+.scene-august { background:linear-gradient(#f5efe6,#faf6ef); }
+.scene-september { background:linear-gradient(#f4efe8,#faf7f2); }
+.scene-october { background:linear-gradient(#fff1e6,#fff7f0); }
+.scene-november { background:linear-gradient(#f3efe9,#faf7f3); }
+.scene-december { background:linear-gradient(#eef4ef,#f6faf7); }
+
+/* layout */
+.container { max-width:1000px; margin:auto; padding:20px; }
+
+.tabs {
+  display:flex; justify-content:center; gap:8px; flex-wrap:wrap;
 }
 
-.tabs{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:6px;
-}
-
-.tab{
-  padding:6px 10px;
+.tab {
+  padding:6px 12px;
   border:none;
-  border-radius:10px;
-  background:#e6eee6;
+  border-radius:12px;
+  background:#e8efe8;
   cursor:pointer;
 }
 
-.tab.active{
+.tab.active {
   background:var(--accent);
   color:white;
 }
 
-.card{
-  background:white;
-  border-radius:20px;
-  padding:20px;
+/* card */
+.card {
   margin-top:15px;
+  background:white;
+  border-radius:30px;
+  padding:30px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 20px 50px rgba(0,0,0,0.08);
 }
 
-h1{
+/* window scene */
+.card::before {
+  content:"";
+  position:absolute;
+  top:10px;
+  left:50%;
+  transform:translateX(-50%);
+  width:70%;
+  height:160px;
+  background:radial-gradient(circle,#ffffff,transparent 70%);
+  border-radius:30px;
+}
+
+.card::after {
+  content:"";
+  position:absolute;
+  top:10px;
+  left:50%;
+  transform:translateX(-50%);
+  width:70%;
+  height:160px;
+  border-radius:30px;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+}
+
+/* title */
+h1 {
   text-align:center;
   font-family:'Playfair Display',serif;
+  font-size:34px;
 }
 
-.grid{
+/* weekdays */
+.weekdays {
   display:grid;
   grid-template-columns:repeat(7,1fr);
-  gap:10px;
-  margin-top:15px;
+  text-align:center;
+  font-size:12px;
+  opacity:0.6;
+  margin-top:20px;
 }
 
-.day{
-  width:40px;
-  height:40px;
+/* grid */
+.grid {
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:14px;
+  margin-top:10px;
+}
+
+/* days */
+.day {
+  width:44px;
+  height:44px;
   border-radius:50%;
   border:2px solid var(--accent);
   background:white;
   cursor:pointer;
+  transition:0.25s;
 }
 
-.day.checked{
+.day.checked {
   background:var(--accent);
-  color:white;
+  transform:scale(1.15);
+  box-shadow:0 0 15px var(--accent);
 }
 
-#illustration{
-  margin-top:15px;
-  text-align:center;
+/* illustration */
+#illustration {
+  position:absolute;
+  bottom:10px;
+  right:20px;
+  font-size:40px;
+  animation:floaty 6s infinite ease-in-out;
 }
+
+@keyframes floaty {
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-8px);}
+}
+
+/* effects */
+.rain, .snow, .leaf, .particle {
+  position:fixed;
+  border-radius:50%;
+  opacity:0.7;
+}
+
+.rain { width:2px;height:12px;background:#9dbbd6; animation:rain 1s linear infinite; }
+@keyframes rain { from{transform:translateY(-50px);} to{transform:translateY(100vh);} }
+
+.snow { width:6px;height:6px;background:white; animation:snow 10s linear infinite; }
+@keyframes snow { from{transform:translateY(-50px);} to{transform:translateY(100vh);} }
+
+.leaf { width:10px;height:10px;background:var(--accent); animation:fall 8s linear infinite; }
+@keyframes fall { from{transform:translateY(-50px);} to{transform:translateY(100vh);} }
+
+.particle { width:6px;height:6px;background:white; animation:float 10s infinite; }
+@keyframes float { from{opacity:0;} 50%{opacity:1;} to{transform:translateY(-120px);opacity:0;} }
+
 </style>
 </head>
 
 <body>
+
+<div id="effects"></div>
 
 <div class="container">
 
@@ -91,60 +172,119 @@ h1{
 
 <div class="card">
   <h1 id="monthTitle"></h1>
+
+  <div class="weekdays">
+    <span>S</span><span>M</span><span>T</span>
+    <span>W</span><span>T</span><span>F</span><span>S</span>
+  </div>
+
   <div class="grid" id="grid"></div>
+
   <div id="illustration"></div>
 </div>
 
 </div>
 
 <script>
-const months=["April","May","June","July","August","September","October","November","December"];
-
-const illustrations={
-April:"🌧️",
-May:"🌿",
-June:"☀️",
-July:"🍉",
-August:"🌾",
-September:"🍂",
-October:"🎃",
-November:"☕",
-December:"🌲"
-};
+const months=[
+{name:"April",days:30,accent:"#7fa7c2"},
+{name:"May",days:31,accent:"#7aa87a"},
+{name:"June",days:30,accent:"#e0b96b"},
+{name:"July",days:31,accent:"#d97b7b"},
+{name:"August",days:31,accent:"#c9a86a"},
+{name:"September",days:30,accent:"#b8895e"},
+{name:"October",days:31,accent:"#d47a2a"},
+{name:"November",days:30,accent:"#8c6f5a"},
+{name:"December",days:31,accent:"#5f8a6b"}
+];
 
 let currentMonth=0;
+let currentYear=new Date().getFullYear();
 
-const tabs=document.getElementById("tabs");
 const grid=document.getElementById("grid");
+const tabs=document.getElementById("tabs");
 
 months.forEach((m,i)=>{
   let b=document.createElement("button");
-  b.innerText=m.slice(0,3);
+  b.innerText=m.name.slice(0,3);
   b.className="tab";
   b.onclick=()=>{currentMonth=i;render();}
   tabs.appendChild(b);
 });
 
+function clearEffects(){
+  document.getElementById("effects").innerHTML="";
+}
+
+function createEffect(type,count){
+  const container=document.getElementById("effects");
+  for(let i=0;i<count;i++){
+    let el=document.createElement("div");
+    el.className=type;
+    el.style.left=Math.random()*100+"vw";
+    el.style.animationDelay=Math.random()*5+"s";
+    container.appendChild(el);
+  }
+}
+
+function applyEffects(name){
+  clearEffects();
+  if(name==="April") createEffect("rain",40);
+  if(name==="May") createEffect("leaf",20);
+  if(name==="June") createEffect("particle",25);
+  if(name==="July") createEffect("particle",15);
+  if(name==="August") createEffect("particle",20);
+  if(name==="September"||name==="October") createEffect("leaf",25);
+  if(name==="November") createEffect("particle",15);
+  if(name==="December") createEffect("snow",40);
+}
+
 function render(){
   grid.innerHTML="";
+  const m=months[currentMonth];
 
-  document.getElementById("monthTitle").innerText=months[currentMonth];
+  document.body.className="";
+  document.body.classList.add("scene-"+m.name.toLowerCase());
 
-  document.getElementById("illustration").innerText=illustrations[months[currentMonth]];
+  document.documentElement.style.setProperty('--accent',m.accent);
+  document.getElementById("monthTitle").innerText=m.name+" "+currentYear;
+
+  document.getElementById("illustration").innerText={
+    April:"🌧️",May:"🌿",June:"☀️",July:"🍉",
+    August:"🌾",September:"🍂",October:"🎃",
+    November:"☕",December:"🌲"
+  }[m.name];
 
   document.querySelectorAll(".tab").forEach((t,i)=>{
     t.classList.toggle("active",i===currentMonth);
   });
 
-  for(let i=1;i<=30;i++){
+  const firstDay=new Date(currentYear,currentMonth+3,1).getDay();
+
+  for(let i=0;i<firstDay;i++){
+    grid.appendChild(document.createElement("div"));
+  }
+
+  for(let i=1;i<=m.days;i++){
     let btn=document.createElement("button");
     btn.className="day";
     btn.innerText=i;
 
-    btn.onclick=()=>btn.classList.toggle("checked");
+    let key=currentYear+"-"+currentMonth+"-"+i;
+
+    if(localStorage.getItem(key)==="true"){
+      btn.classList.add("checked");
+    }
+
+    btn.onclick=()=>{
+      btn.classList.toggle("checked");
+      localStorage.setItem(key,btn.classList.contains("checked"));
+    };
 
     grid.appendChild(btn);
   }
+
+  applyEffects(m.name);
 }
 
 render();
