@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Outside Time 🌿</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: "Georgia", serif;
+  background: linear-gradient(180deg, #eef2ee, #f7f4ef);
+  color: #4f6f52;
+}
+
+/* layout */
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* tabs */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.tab {
+  padding: 6px 12px;
+  border-radius: 12px;
+  border: none;
+  background: #e6eee6;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: #7aa87a;
+  color: white;
+}
+
+/* main layout */
+.main {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 20px;
+}
+
+/* side panel */
+.side {
+  background: rgba(255,255,255,0.6);
+  border-radius: 20px;
+  padding: 20px;
+}
+
+/* card */
+.card {
+  background: white;
+  border-radius: 30px;
+  padding: 25px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  opacity: 0.7;
+}
+
+/* grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.day {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid #7aa87a;
+  background: #fdfdfc;
+  cursor: pointer;
+}
+
+.day.checked {
+  background: #7aa87a;
+  color: white;
+}
+
+/* notes */
+.notes {
+  margin-top: 15px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 20px;
+  padding: 20px;
+}
+
+textarea {
+  width: 100%;
+  border-radius: 12px;
+  border: none;
+  padding: 10px;
+  margin-top: 8px;
+  background: #f6f9f6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- MONTH TABS -->
+<div class="tabs" id="tabs"></div>
+
+<div class="main">
+
+<!-- INSIGHTS -->
+<div class="side">
+  <h3>🌿 Insights</h3>
+  <p id="insight"></p>
+</div>
+
+<!-- MAIN CARD -->
+<div class="card">
+  <h1 id="monthTitle"></h1>
+  <p class="subtitle">I went outside for at least 15 minutes</p>
+  <div class="grid" id="grid"></div>
+</div>
+
+</div>
+
+<!-- NOTES -->
+<div class="notes">
+  <h3>📚 What I'm reading</h3>
+  <textarea id="reading"></textarea>
+
+  <h3>🎵 Songs on repeat</h3>
+  <textarea id="songs"></textarea>
+
+  <h3>🌸 Today I choose me</h3>
+  <textarea id="habits"></textarea>
+</div>
+
+</div>
+
+<script>
+const months = [
+  {name:"January", days:31},
+  {name:"February", days:28},
+  {name:"March", days:31},
+  {name:"April", days:30},
+  {name:"May", days:31},
+  {name:"June", days:30},
+  {name:"July", days:31},
+  {name:"August", days:31},
+  {name:"September", days:30},
+  {name:"October", days:31},
+  {name:"November", days:30},
+  {name:"December", days:31}
+];
+
+let currentMonth = new Date().getMonth();
+
+const tabs = document.getElementById("tabs");
+const grid = document.getElementById("grid");
+
+months.forEach((m, i) => {
+  let btn = document.createElement("button");
+  btn.innerText = m.name.slice(0,3);
+  btn.className = "tab";
+  btn.onclick = () => {
+    currentMonth = i;
+    render();
+  };
+  tabs.appendChild(btn);
+});
+
+function render() {
+  grid.innerHTML = "";
+
+  document.getElementById("monthTitle").innerText =
+    months[currentMonth].name + " 2026";
+
+  document.querySelectorAll(".tab").forEach((t,i)=>{
+    t.classList.toggle("active", i === currentMonth);
+  });
+
+  for (let i = 1; i <= months[currentMonth].days; i++) {
+    let btn = document.createElement("button");
+    btn.className = "day";
+    btn.innerText = i;
+
+    let key = currentMonth + "-" + i;
+
+    if (localStorage.getItem(key) === "true") {
+      btn.classList.add("checked");
+    }
+
+    btn.onclick = () => {
+      btn.classList.toggle("checked");
+      localStorage.setItem(key, btn.classList.contains("checked"));
+      updateInsight();
+    };
+
+    grid.appendChild(btn);
+  }
+
+  updateInsight();
+}
+
+function updateInsight() {
+  let count = 0;
+  let total = months[currentMonth].days;
+
+  for (let i = 1; i <= total; i++) {
+    if (localStorage.getItem(currentMonth + "-" + i) === "true") count++;
+  }
+
+  document.getElementById("insight").innerText =
+    "You stepped outside " + count + " days this month 🌿";
+}
+
+["reading","songs","habits"].forEach(id=>{
+  let el = document.getElementById(id);
+  el.value = localStorage.getItem(id) || "";
+  el.oninput = () => localStorage.setItem(id, el.value);
+});
+
+render();
+</script>
+
+</body>
+</html>
