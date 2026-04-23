@@ -8,44 +8,42 @@
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
 
 <style>
-:root {
-  --accent: #7aa87a;
-}
+:root { --accent:#7aa87a; }
 
 body {
-  margin: 0;
-  font-family: 'Quicksand', sans-serif;
-  background: linear-gradient(#eef2ee, #f7f4ef);
-  color: #4f6f52;
-  overflow-x: hidden;
+  margin:0;
+  font-family:'Quicksand',sans-serif;
+  background:linear-gradient(#eef2ee,#f7f4ef);
+  color:#4f6f52;
 }
 
-/* watercolor texture */
-body::before {
+/* texture */
+body::before{
   content:"";
-  position: fixed;
+  position:fixed;
   inset:0;
-  background: radial-gradient(circle at 20% 30%, rgba(200,220,200,0.2), transparent),
-              radial-gradient(circle at 80% 70%, rgba(220,200,200,0.2), transparent);
+  background:
+    radial-gradient(circle at 20% 30%, rgba(200,220,200,0.2), transparent),
+    radial-gradient(circle at 80% 70%, rgba(220,200,200,0.15), transparent);
   z-index:-1;
 }
 
-/* layout */
-.container {
-  max-width: 1100px;
-  margin: auto;
-  padding: 20px;
+/* container */
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
 }
 
 /* tabs */
-.tabs {
+.tabs{
   display:flex;
+  flex-wrap:wrap;
   justify-content:center;
   gap:8px;
-  flex-wrap:wrap;
 }
 
-.tab {
+.tab{
   padding:6px 12px;
   border-radius:14px;
   border:none;
@@ -53,13 +51,13 @@ body::before {
   cursor:pointer;
 }
 
-.tab.active {
+.tab.active{
   background:var(--accent);
   color:white;
 }
 
 /* layout */
-.main {
+.main{
   display:grid;
   grid-template-columns:260px 1fr;
   gap:20px;
@@ -67,7 +65,7 @@ body::before {
 }
 
 /* side */
-.side {
+.side{
   background:rgba(255,255,255,0.6);
   backdrop-filter:blur(10px);
   border-radius:20px;
@@ -75,7 +73,7 @@ body::before {
 }
 
 /* card */
-.card {
+.card{
   background:white;
   border-radius:30px;
   padding:30px;
@@ -85,7 +83,7 @@ body::before {
 }
 
 /* window glow */
-.card::before {
+.card::before{
   content:"";
   position:absolute;
   top:20px;
@@ -93,33 +91,33 @@ body::before {
   transform:translateX(-50%);
   width:70%;
   height:140px;
-  background: radial-gradient(circle,#ffffff,transparent);
+  background:radial-gradient(circle,#ffffff,transparent);
   opacity:0.5;
 }
 
 /* title */
-h1 {
+h1{
   text-align:center;
-  font-family:'Playfair Display', serif;
+  font-family:'Playfair Display',serif;
   font-size:34px;
 }
 
 /* subtitle */
-.subtitle {
+.subtitle{
   text-align:center;
   opacity:0.6;
 }
 
 /* grid */
-.grid {
+.grid{
   display:grid;
   grid-template-columns:repeat(7,1fr);
   gap:14px;
   margin-top:20px;
 }
 
-/* day */
-.day {
+/* days */
+.day{
   width:44px;
   height:44px;
   border-radius:50%;
@@ -129,32 +127,23 @@ h1 {
   transition:0.25s;
 }
 
-.day.checked {
+.day.checked{
   background:var(--accent);
   transform:scale(1.12);
   box-shadow:0 0 15px var(--accent);
 }
 
-/* bunny illustration */
-.bunny {
+/* illustration */
+#illustration{
   position:absolute;
   bottom:10px;
-  left:10px;
-  width:80px;
-  opacity:0.8;
-}
-
-/* plant */
-.plant {
-  position:absolute;
-  bottom:10px;
-  right:20px;
-  width:70px;
-  opacity:0.7;
+  right:10px;
+  width:130px;
+  opacity:0.9;
 }
 
 /* sparkles */
-.sparkle {
+.sparkle{
   position:absolute;
   width:8px;
   height:8px;
@@ -163,22 +152,21 @@ h1 {
   animation:float 8s infinite;
 }
 
-@keyframes float {
-  0% {transform:translateY(0);opacity:0;}
-  50% {opacity:1;}
-  100% {transform:translateY(-120px);opacity:0;}
+@keyframes float{
+  0%{transform:translateY(0);opacity:0;}
+  50%{opacity:1;}
+  100%{transform:translateY(-120px);opacity:0;}
 }
 
 /* notes */
-.notes {
+.notes{
   margin-top:15px;
   background:rgba(255,255,255,0.6);
   border-radius:20px;
   padding:20px;
 }
 
-/* text */
-textarea {
+textarea{
   width:100%;
   border-radius:12px;
   border:none;
@@ -193,7 +181,7 @@ textarea {
 
 <div class="container">
 
-<div class="sparkle" style="left:10%; top:90%;"></div>
+<div class="sparkle" style="left:15%; top:90%;"></div>
 <div class="sparkle" style="left:60%; top:95%; animation-delay:2s;"></div>
 <div class="sparkle" style="left:80%; top:85%; animation-delay:4s;"></div>
 
@@ -204,6 +192,7 @@ textarea {
 <div class="side">
   <h3>🌿 Insights</h3>
   <p id="insight"></p>
+
   <label><input type="checkbox" id="togglePercent"> show %</label>
   <p id="percent"></p>
 
@@ -220,19 +209,7 @@ textarea {
 
   <div class="grid" id="grid"></div>
 
-  <!-- bunny svg -->
-  <svg class="bunny" viewBox="0 0 100 100">
-    <circle cx="50" cy="60" r="20" fill="#f2f2f2"/>
-    <ellipse cx="40" cy="25" rx="8" ry="18" fill="#f2f2f2"/>
-    <ellipse cx="60" cy="25" rx="8" ry="18" fill="#f2f2f2"/>
-  </svg>
-
-  <!-- plant svg -->
-  <svg class="plant" viewBox="0 0 100 100">
-    <rect x="45" y="60" width="10" height="25" fill="#8fbf8f"/>
-    <ellipse cx="50" cy="50" rx="15" ry="20" fill="#a8d5a8"/>
-  </svg>
-
+  <div id="illustration"></div>
 </div>
 
 </div>
@@ -251,17 +228,29 @@ textarea {
 </div>
 
 <script>
-const months = [
-  {name:"April",days:30,accent:"#7fa7c2"},
-  {name:"May",days:31,accent:"#7aa87a"},
-  {name:"June",days:30,accent:"#e0b96b"},
-  {name:"July",days:31,accent:"#d97b7b"},
-  {name:"August",days:31,accent:"#c9a86a"},
-  {name:"September",days:30,accent:"#b8895e"},
-  {name:"October",days:31,accent:"#d47a2a"},
-  {name:"November",days:30,accent:"#8c6f5a"},
-  {name:"December",days:31,accent:"#5f8a6b"}
+const months=[
+{name:"April",days:30,accent:"#7fa7c2"},
+{name:"May",days:31,accent:"#7aa87a"},
+{name:"June",days:30,accent:"#e0b96b"},
+{name:"July",days:31,accent:"#d97b7b"},
+{name:"August",days:31,accent:"#c9a86a"},
+{name:"September",days:30,accent:"#b8895e"},
+{name:"October",days:31,accent:"#d47a2a"},
+{name:"November",days:30,accent:"#8c6f5a"},
+{name:"December",days:31,accent:"#5f8a6b"}
 ];
+
+const illustrations={
+April:`<svg viewBox="0 0 100 100"><path d="M20 50 Q50 20 80 50" stroke="#7fa7c2" fill="none"/><line x1="40" y1="60" x2="40" y2="80" stroke="#7fa7c2"/><line x1="60" y1="60" x2="60" y2="80" stroke="#7fa7c2"/></svg>`,
+May:`<svg viewBox="0 0 100 100"><circle cx="50" cy="60" r="12" fill="#a8d5a8"/><ellipse cx="50" cy="40" rx="15" ry="20" fill="#bde5bd"/></svg>`,
+June:`<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="15" fill="#ffe08a"/></svg>`,
+July:`<svg viewBox="0 0 100 100"><ellipse cx="50" cy="60" rx="20" ry="12" fill="#ff9b9b"/></svg>`,
+August:`<svg viewBox="0 0 100 100"><line x1="50" y1="30" x2="50" y2="80" stroke="#c9a86a"/><ellipse cx="50" cy="40" rx="10" ry="15" fill="#e8d4a2"/></svg>`,
+September:`<svg viewBox="0 0 100 100"><path d="M50 20 Q70 50 50 80 Q30 50 50 20" fill="#b8895e"/></svg>`,
+October:`<svg viewBox="0 0 100 100"><circle cx="50" cy="60" r="18" fill="#d47a2a"/><rect x="45" y="35" width="10" height="15" fill="#7a4f2a"/></svg>`,
+November:`<svg viewBox="0 0 100 100"><rect x="35" y="50" width="30" height="20" fill="#8c6f5a"/><circle cx="65" cy="55" r="8" fill="#c9b1a0"/></svg>`,
+December:`<svg viewBox="0 0 100 100"><polygon points="50,20 70,60 30,60" fill="#5f8a6b"/><rect x="45" y="60" width="10" height="20" fill="#8c6f5a"/></svg>`
+};
 
 let currentMonth=0;
 let currentYear=new Date().getFullYear();
@@ -270,76 +259,78 @@ const grid=document.getElementById("grid");
 const tabs=document.getElementById("tabs");
 
 months.forEach((m,i)=>{
-  let b=document.createElement("button");
-  b.innerText=m.name.slice(0,3);
-  b.className="tab";
-  b.onclick=()=>{currentMonth=i;render();}
-  tabs.appendChild(b);
+let b=document.createElement("button");
+b.innerText=m.name.slice(0,3);
+b.className="tab";
+b.onclick=()=>{currentMonth=i;render();}
+tabs.appendChild(b);
 });
 
 function render(){
-  grid.innerHTML="";
-  const m=months[currentMonth];
+grid.innerHTML="";
+const m=months[currentMonth];
 
-  document.documentElement.style.setProperty('--accent',m.accent);
-  document.getElementById("monthTitle").innerText=m.name+" "+currentYear;
+document.documentElement.style.setProperty('--accent',m.accent);
+document.getElementById("monthTitle").innerText=m.name+" "+currentYear;
 
-  document.querySelectorAll(".tab").forEach((t,i)=>{
-    t.classList.toggle("active",i===currentMonth);
-  });
+document.getElementById("illustration").innerHTML=illustrations[m.name];
 
-  for(let i=1;i<=m.days;i++){
-    let btn=document.createElement("button");
-    btn.className="day";
-    btn.innerText=i;
+document.querySelectorAll(".tab").forEach((t,i)=>{
+t.classList.toggle("active",i===currentMonth);
+});
 
-    let key=currentYear+"-"+currentMonth+"-"+i;
+for(let i=1;i<=m.days;i++){
+let btn=document.createElement("button");
+btn.className="day";
+btn.innerText=i;
 
-    if(localStorage.getItem(key)==="true"){
-      btn.classList.add("checked");
-    }
+let key=currentYear+"-"+currentMonth+"-"+i;
 
-    btn.onclick=()=>{
-      btn.classList.toggle("checked");
-      localStorage.setItem(key,btn.classList.contains("checked"));
-      updateInsight();
-    };
+if(localStorage.getItem(key)==="true"){
+btn.classList.add("checked");
+}
 
-    grid.appendChild(btn);
-  }
+btn.onclick=()=>{
+btn.classList.toggle("checked");
+localStorage.setItem(key,btn.classList.contains("checked"));
+updateInsight();
+};
 
-  updateInsight();
+grid.appendChild(btn);
+}
+
+updateInsight();
 }
 
 function updateInsight(){
-  let m=months[currentMonth];
-  let count=0;
+let m=months[currentMonth];
+let count=0;
 
-  for(let i=1;i<=m.days;i++){
-    if(localStorage.getItem(currentYear+"-"+currentMonth+"-"+i)==="true") count++;
-  }
+for(let i=1;i<=m.days;i++){
+if(localStorage.getItem(currentYear+"-"+currentMonth+"-"+i)==="true") count++;
+}
 
-  document.getElementById("insight").innerText=
-    "You stepped outside "+count+" days 🌿";
+document.getElementById("insight").innerText=
+"You stepped outside "+count+" days 🌿";
 
-  let percent=Math.round((count/m.days)*100);
-  document.getElementById("percent").innerText=
-    document.getElementById("togglePercent").checked ? percent+"%" : "";
+let percent=Math.round((count/m.days)*100);
+document.getElementById("percent").innerText=
+document.getElementById("togglePercent").checked ? percent+"%" : "";
 }
 
 function setMood(m){
-  const msg={
-    gentle:"soft days matter 🌿",
-    tired:"rest counts too ☁️",
-    motivated:"steady growth ✨"
-  };
-  document.getElementById("message").innerText=msg[m];
+const msg={
+gentle:"soft days matter 🌿",
+tired:"rest counts too ☁️",
+motivated:"steady growth ✨"
+};
+document.getElementById("message").innerText=msg[m];
 }
 
 ["reading","songs","habits"].forEach(id=>{
-  let el=document.getElementById(id);
-  el.value=localStorage.getItem(id)||"";
-  el.oninput=()=>localStorage.setItem(id,el.value);
+let el=document.getElementById(id);
+el.value=localStorage.getItem(id)||"";
+el.oninput=()=>localStorage.setItem(id,el.value);
 });
 
 document.getElementById("togglePercent").onchange=updateInsight;
